@@ -11,7 +11,7 @@ namespace ShopLogic.Servise
 {
     public class LocalDbServiseOrder
     {
-        public string AddToDbOrder(ApplicationContext db, Order order, int userId)
+        public string AddToTrashOrder(ApplicationContext db, Order order, int userId)
         {
             order.UserId = userId;
             db.Orders.Add(order);
@@ -33,26 +33,9 @@ namespace ShopLogic.Servise
             }
             return "Object Added";
         }
-        public void RemoveFromDbOrder(ApplicationContext db, Order order)
+        public string BuyOrders(ApplicationContext db, int userId)
         {
-            db.Remove(order);
-            db.SaveChanges();
-            Console.WriteLine("Remuve successfuly");
-        }
-        public void ChangesToDbOrder(ApplicationContext db, Order order)
-        {
-            db.Orders.Update(order);
-            db.SaveChanges();
-            Console.WriteLine("Changes was saved");
-        }
-        public List<Order> GetFromDbOrderList(ApplicationContext db)
-        {
-            List<Order> result = db.Orders.ToList();
-            return result;
-        }
-        public void BuyOrders(ApplicationContext db, int userId, List<int> ordersId)
-        {
-            List<Order> orders = db.Orders.Where(x=> x.UserId == userId).ToList();
+            List<Order> orders = db.Orders.Where(x=> x.UserId == userId && x.IsPayed == false).ToList();
             User user = db.Users.Where(x => x.Id == userId).Single();
             decimal totalOrdersPrice = orders.Sum(x => x.Price);
             if (totalOrdersPrice <= user.MoneyBalance)
@@ -64,30 +47,23 @@ namespace ShopLogic.Servise
                     item.IsPayed = true;
                 }
                 db.SaveChanges();
-                Console.WriteLine("Orders successfully purchased");
+               return "Orders successfully purchased";
             }
             else
             {
-                Console.WriteLine("You don't have enough money");
+                return "You don't have enough money";
             }
         }
-        public void RemoveOrderFromTrash (ApplicationContext db, int userId, List<int> ordersId)
+        public string RemoveOrderFromTrash (ApplicationContext db, int userId, List<int> ordersId)
         {
-            List<Order> orders = db.Orders.Where(x => x.UserId == userId).ToList();
+            List<Order> orders = db.Orders.Where(x => x.UserId == userId && x.IsPayed != true).ToList();
 
-            for (int i = 0; i < orders.Count; i++)
+            for (int j = 0; j < ordersId.Count; j++)
             {
-                for (int j = 0; j < ordersId.Count; j++)
-                {
-                    if (orders[i].Id == ordersId[j] && orders[i].IsPayed != true)
-                    {
-                        db.Orders.Remove(orders[i]);
-                        db.SaveChanges();
-                    }
-                    else
-                        continue;
-                }
+                db.Orders.Remove(orders[j]);
+                db.SaveChanges();
             }
+            return "Selected orders have been deleted";
         }
     }
 }

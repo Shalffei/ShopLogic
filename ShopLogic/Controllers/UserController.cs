@@ -5,6 +5,8 @@ using ShopLogic.Models;
 using System.Text.Json;
 using System.IO;
 using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json.Serialization;
 
 namespace ShopLogic.Controllers
 {
@@ -12,42 +14,67 @@ namespace ShopLogic.Controllers
     [Route("[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly ApplicationContext db = new ApplicationContext();
-        private readonly ILogger<UserController> _logger;
-
-        public UserController(ILogger<UserController> logger)
+        // базовые настройки сериализатора textJson, пишу сюда ибо настройки много места занимают
+        public static readonly JsonSerializerOptions BaseTextJsonSerializerWriteSettings = new()
         {
-            _logger = logger;
-        }
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
 
+        public static readonly JsonSerializerOptions BaseTextJsonSerializerReadSettings = new()
+        {
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            PropertyNameCaseInsensitive = true,
+            NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals
+        };
         [HttpPost]
         [Route("AddUser")]
         public IActionResult GetUser ([FromBody] User model)
         {
-            LocalDbServiseUser addUser = new LocalDbServiseUser();
-            model.MoneyBalance = 0.0m;
-            string message = addUser.AddToDbUser(db, model);
-            var resultMessage = JsonSerializer.Serialize(message);
-            return Ok(resultMessage);
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                LocalDbServiseUser addUser = new LocalDbServiseUser();
+                model.MoneyBalance = 0.0m;
+                string message = addUser.AddToDbUser(db, model);
+                return Ok(message);
+            }
         }
         [HttpPost]
         [Route("RemoveUser")]
         public IActionResult RemoveUser([FromBody] User model)
         {
-            LocalDbServiseUser addUser = new LocalDbServiseUser();
-            string message = addUser.RemoveFromDbUser(db, model);
-            var resultMessage = JsonSerializer.Serialize(message);
-            return Ok(resultMessage);
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                LocalDbServiseUser addUser = new LocalDbServiseUser();
+                string message = addUser.RemoveFromDbUser(db, model);
+                return Ok(message);
+            }
         }
         [HttpPost]
         [Route("ChangeUser")]
         public IActionResult ChangeUser([FromBody] User model)
         {
-            LocalDbServiseUser addUser = new LocalDbServiseUser();
-            string message = addUser.ChangesToDbUser(db, model);
-            var resultMessage = JsonSerializer.Serialize(message);
-            return Ok(resultMessage);
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                LocalDbServiseUser addUser = new LocalDbServiseUser();
+                string message = addUser.ChangesToDbUser(db, model);
+                return Ok(message);
+            }
         }
-        
+        [HttpGet]
+        [Route("GetBouthOrders")]
+        public IActionResult GetBouthOrders([FromQuery] int userId)
+        {
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                LocalDbServiseUser addUser = new LocalDbServiseUser();
+                var result = addUser.GetUserBoughtOrders(db, userId);
+                var serialize = JsonSerializer.Serialize(result,BaseTextJsonSerializerWriteSettings);
+                return Content(serialize);
+            }
+        }
+
     }
 }
