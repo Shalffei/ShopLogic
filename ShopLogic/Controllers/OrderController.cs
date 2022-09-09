@@ -13,22 +13,6 @@ namespace ShopLogic.Controllers
     [Route("[controller]")]
     public class OrderController : ControllerBase
     {
-
-        // базовые настройки сериализатора textJson, пишу сюда ибо настройки много места занимают
-        public static readonly JsonSerializerOptions BaseTextJsonSerializerWriteSettings = new()
-        {
-            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-        };
-
-        public static readonly JsonSerializerOptions BaseTextJsonSerializerReadSettings = new()
-        {
-            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
-            PropertyNameCaseInsensitive = true,
-            NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals
-        };
         [HttpPost]
         [Route("AddOrders")]
         public IActionResult AddOrders([FromBody] List<Order> model, [FromQuery] int userId)

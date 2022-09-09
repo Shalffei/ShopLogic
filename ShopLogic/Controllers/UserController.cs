@@ -36,9 +36,9 @@ namespace ShopLogic.Controllers
             using (ApplicationContext db = new ApplicationContext())
             {
                 LocalDbServiseUser addUser = new LocalDbServiseUser();
-                model.MoneyBalance = 0.0m;
+                model.MoneyBalance = 3000.0m;
                 string message = addUser.AddToDbUser(db, model);
-                return Ok(message);
+                return Content(message);
             }
         }
         [HttpPost]
@@ -72,7 +72,7 @@ namespace ShopLogic.Controllers
                 LocalDbServiseUser addUser = new LocalDbServiseUser();
                 var result = addUser.GetUserBoughtOrders(db, userId);
                 var serialize = JsonSerializer.Serialize(result,BaseTextJsonSerializerWriteSettings);
-                return Content(serialize);
+                return Content(serialize, "application/json; charset=utf-8");
             }
         }
 
