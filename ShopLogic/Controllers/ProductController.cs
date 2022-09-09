@@ -2,6 +2,9 @@
 using ShopLogic.EntityFramework;
 using ShopLogic.Models;
 using ShopLogic.Servise;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ShopLogic.Controllers
 
@@ -10,6 +13,21 @@ namespace ShopLogic.Controllers
     [Route("[controller]")]
     public class ProductController : ControllerBase
     {
+        // базовые настройки сериализатора textJson, пишу сюда ибо настройки много места занимают
+        public static readonly JsonSerializerOptions BaseTextJsonSerializerWriteSettings = new()
+        {
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
+
+        public static readonly JsonSerializerOptions BaseTextJsonSerializerReadSettings = new()
+        {
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            PropertyNameCaseInsensitive = true,
+            NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals
+        };
         [HttpPost]
         [Route("AddProducts")]
         public string AddProducts([FromBody] List<Product> products)
@@ -23,13 +41,14 @@ namespace ShopLogic.Controllers
         }
         [HttpPost]
         [Route("OrderStatisticsByDate")]
-        public string OrderStatisticsByDate([FromBody] StartFinishDate startFinishDate)
+        public IActionResult OrderStatisticsByDate([FromBody] StartFinishDate startFinishDate)
         {
             using (ApplicationContext db = new ApplicationContext())
             {
                 LocalDbServiseOrder serviseOrders = new LocalDbServiseOrder();
-                serviseOrders.GetDateOrdersWithUser(db, startFinishDate.StartDate, startFinishDate.EndDate);
-                return "Ok";
+                var result = serviseOrders.GetDateOrdersWithUser(db, startFinishDate.StartDate, startFinishDate.EndDate);
+                var serialazer = JsonSerializer.Serialize(result, BaseTextJsonSerializerWriteSettings);
+                return Content(serialazer, "application/json; charset=utf-8");
             }
         }
     }
