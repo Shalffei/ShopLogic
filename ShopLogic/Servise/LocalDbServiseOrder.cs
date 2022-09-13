@@ -71,7 +71,7 @@ namespace ShopLogic.Servise
         public TimofeyModel2 GetDateOrdersWithUser (ApplicationContext db, DateTime start, DateTime finish)
         {
             TimofeyModel2 timofeyModel2 = new TimofeyModel2 { Users = new List<TimofeyModelUserData>() }; 
-            timofeyModel2.PopularProductId = db.Products.Include(x => x.ProductOrders.Where(x => x.Created >= start && x.Created <= finish)).OrderByDescending(x => x.BuyCount).Select(x => x.Id).FirstOrDefault();
+            timofeyModel2.PopularProductId = db.Products.Include(prod => prod.ProductOrders.Where(order => order.Created >= start && order.Created <= finish)).OrderByDescending(x => x.BuyCount).Select(x => x.Id).FirstOrDefault();
             var usersId = db.Users.Include(user => user.UserOrders.Where(order => order.Created >= start && order.Created <= finish)).Select(user => user.Id).ToList();
             for (int i = 0; i < usersId.Count; i++)
             {
