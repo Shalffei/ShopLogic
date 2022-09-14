@@ -28,14 +28,25 @@ namespace ShopLogic.Servise
                 db.SaveChanges();
             }            
         }
-        public ProductResponse GetListProductOnPage (ApplicationContext db, int page, int countProductsOnPage, string productName)
+        public ProductResponse GetListProductOnPage (ApplicationContext db, Paging paging, SerchingFilterProducts serchingFilter)
         {
-            var products = db.Products
-                .Where(prod => prod.Name == productName)
-                .Skip((page - 1) * countProductsOnPage)
-                .Take(countProductsOnPage)
+            List<Product> products = new List<Product>();
+            if (serchingFilter.ProductName == null)
+            {
+                products = db.Products
+                .Skip((paging.Page - 1) * paging.Page)
+                .Take(paging.countProductsOnPage)
                 .ToList();
-            var result = new ProductResponse { Products = products, CurrentPage = page, TotalProducts = db.Products.Count() };
+            }
+            else
+            {
+                products = db.Products
+                .Where(prod => prod.Name == serchingFilter.ProductName)
+                .Skip((paging.Page - 1) * paging.Page)
+                .Take(paging.countProductsOnPage)
+                .ToList();
+            }
+            var result = new ProductResponse { Products = products, CurrentPage = paging.Page, TotalProducts = db.Products.Count() };
             return result;
         }
     }
