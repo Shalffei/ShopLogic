@@ -53,12 +53,12 @@ namespace ShopLogic.Controllers
         }
         [HttpGet]
         [Route("GetProducts")]
-        public IActionResult GetProducts([FromQuery] int page, [FromQuery] int count)
+        public IActionResult GetProducts([FromQuery] int page, [FromQuery] int count, [FromQuery] string productName)
         {
             using (ApplicationContext db = new ApplicationContext())
             {
                 LocalDbServiseProducts localDbServiseProducts = new LocalDbServiseProducts();
-                var products = localDbServiseProducts.GetListProductOnPage(db, page, count);
+                var products = localDbServiseProducts.GetListProductOnPage(db, page, count,productName);
                 var result = JsonSerializer.Serialize(products, BaseTextJsonSerializerWriteSettings);
                 return Content(result, "application/json; charset=utf-8");
             }

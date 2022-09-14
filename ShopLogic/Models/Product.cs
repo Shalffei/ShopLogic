@@ -6,6 +6,7 @@
         public string Name { get; set; }
         public decimal Price { get; set; }
         public int? BuyCount { get; set; }
+        public ProductCategory? Category { get; set; }
         public List<Order>? ProductOrders { get; set; }
     }
 }

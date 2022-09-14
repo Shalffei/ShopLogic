@@ -28,9 +28,10 @@ namespace ShopLogic.Servise
                 db.SaveChanges();
             }            
         }
-        public ProductResponse GetListProductOnPage (ApplicationContext db, int page, int countProductsOnPage)
+        public ProductResponse GetListProductOnPage (ApplicationContext db, int page, int countProductsOnPage, string productName)
         {
             var products = db.Products
+                .Where(prod => prod.Name == productName)
                 .Skip((page - 1) * countProductsOnPage)
                 .Take(countProductsOnPage)
                 .ToList();
