@@ -28,5 +28,15 @@ namespace ShopLogic.Servise
                 db.SaveChanges();
             }            
         }
+        public ProductResponse GetListProduct (ApplicationContext db, int page)
+        {
+            var prodOnOnePage = 3f;
+            var products = db.Products
+                .Skip((page - 1) * (int)prodOnOnePage)
+                .Take((int)prodOnOnePage)
+                .ToList();
+            var result = new ProductResponse { Products = products, CurrentPage = page, TotalProducts = db.Products.Count() };
+            return result;
+        }
     }
 }
