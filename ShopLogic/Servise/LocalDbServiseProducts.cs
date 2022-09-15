@@ -34,16 +34,16 @@ namespace ShopLogic.Servise
             if (serchingFilter.ProductName == null)
             {
                 products = db.Products
-                .Skip((paging.Page - 1) * paging.Page)
-                .Take(paging.countProductsOnPage)
+                .Skip((paging.Page - 1) * paging.CountProductsOnPage)
+                .Take(paging.CountProductsOnPage)
                 .ToList();
             }
             else
             {
                 products = db.Products
                 .Where(prod => prod.Name == serchingFilter.ProductName)
-                .Skip((paging.Page - 1) * paging.Page)
-                .Take(paging.countProductsOnPage)
+                .Skip((paging.Page - 1) * paging.CountProductsOnPage)
+                .Take(paging.CountProductsOnPage)
                 .ToList();
             }
             var result = new ProductResponse { Products = products, CurrentPage = paging.Page, TotalProducts = db.Products.Count() };
