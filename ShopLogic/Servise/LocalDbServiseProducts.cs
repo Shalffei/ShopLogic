@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShopLogic.EntityFramework;
 using ShopLogic.Models;
+using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 
 namespace ShopLogic.Servise
@@ -28,25 +29,50 @@ namespace ShopLogic.Servise
                 db.SaveChanges();
             }            
         }
-        public ProductResponse GetListProductOnPage (ApplicationContext db, Paging paging, SerchingFilterProducts serchingFilter)
+        public ProductResponse GetListProductOnPage (ApplicationContext db, PagingWithSerchingFilterProducts serchingFilter)
         {
             List<Product> products = new List<Product>();
-            if (serchingFilter.ProductName == null)
+            if (serchingFilter.ProductFilter != null && serchingFilter.ProductName != null)
             {
                 products = db.Products
-                .Skip((paging.Page - 1) * paging.CountProductsOnPage)
-                .Take(paging.CountProductsOnPage)
+                .AsNoTracking()
+                .Where(prod => prod.Name.Contains(serchingFilter.ProductName) && prod.ProductCategoryName == serchingFilter.ProductFilter)
+                .Select(prod => new Product { Id = prod.Id, Name = prod.Name, Price = prod.Price })
+                .Skip((serchingFilter.Page - 1) * serchingFilter.CountProductsOnPage)
+                .Take(serchingFilter.CountProductsOnPage)
                 .ToList();
             }
-            else
+            else if (serchingFilter.ProductName != null)
             {
                 products = db.Products
-                .Where(prod => prod.Name == serchingFilter.ProductName)
-                .Skip((paging.Page - 1) * paging.CountProductsOnPage)
-                .Take(paging.CountProductsOnPage)
+                .AsNoTracking()
+                .Where(prod => prod.Name.Contains(serchingFilter.ProductName))
+                .Select(prod => new Product { Id = prod.Id, Name = prod.Name, Price = prod.Price })
+                .Skip((serchingFilter.Page - 1) * serchingFilter.CountProductsOnPage)
+                .Take(serchingFilter.CountProductsOnPage)
+                .ToList();
+                
+            }
+            else if (serchingFilter.ProductFilter != null)
+            {
+                products = db.Products
+                .AsNoTracking()
+                .Where(prod => prod.Name == serchingFilter.ProductFilter)
+                .Select(prod => new Product { Id = prod.Id, Name = prod.Name, Price = prod.Price })
+                .Skip((serchingFilter.Page - 1) * serchingFilter.CountProductsOnPage)
+                .Take(serchingFilter.CountProductsOnPage)
                 .ToList();
             }
-            var result = new ProductResponse { Products = products, CurrentPage = paging.Page, TotalProducts = db.Products.Count() };
+            else  
+            {
+                 products = db.Products
+                 .AsNoTracking()
+                 .Select(prod => new Product { Id = prod.Id, Name = prod.Name, Price = prod.Price })
+                 .Skip((serchingFilter.Page - 1) * serchingFilter.CountProductsOnPage)
+                 .Take(serchingFilter.CountProductsOnPage)
+                 .ToList();
+            }
+            var result = new ProductResponse { Products = products, CurrentPage = serchingFilter.Page, TotalProducts = db.Products.Count() };
             return result;
         }
     }

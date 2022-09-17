@@ -13,7 +13,7 @@ namespace ShopLogic.EntityFramework
         public DbSet<User> Users { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<ProductCategory> ProductCategories { get; set; }
+        
 
         public ApplicationContext()
         {
@@ -28,7 +28,6 @@ namespace ShopLogic.EntityFramework
             modelBuilder.Entity<User>().HasIndex(x => x.Name).IsUnique();
             modelBuilder.Entity<User>().HasIndex(x => x.Email).IsUnique();
             modelBuilder.Entity<Product>().HasIndex(x => x.Name).IsUnique();
-            modelBuilder.Entity<ProductCategory>().HasIndex(x => x.CategoryName).IsUnique();
         }
     }
 }

@@ -45,23 +45,23 @@ namespace ShopLogic.Controllers
         {
             using (ApplicationContext db = new ApplicationContext())
             {
-                LocalDbServiseOrder serviseOrders = new LocalDbServiseOrder();
-                var result = serviseOrders.GetDateOrdersWithUserTimofeyEdition(db, startFinishDate.StartDate, startFinishDate.EndDate);
+                LocalDbServiseStatistic dbServiseStatistic = new LocalDbServiseStatistic();
+                var result = dbServiseStatistic.GetDateOrdersWithUserTimofeyEdition(db, startFinishDate.StartDate, startFinishDate.EndDate);
                 var serialazer = JsonSerializer.Serialize(result, BaseTextJsonSerializerWriteSettings);
                 return Content(serialazer, "application/json; charset=utf-8");
             }
         }
         [HttpPost]
         [Route("GetProducts")]
-        public IActionResult GetProducts([FromBody] Paging paging, [FromBody] SerchingFilterProducts serchingFilterProducts)
+        public IActionResult GetProducts([FromBody] PagingWithSerchingFilterProducts serchingFilterProducts)
         {
             using (ApplicationContext db = new ApplicationContext())
             {
                 LocalDbServiseProducts localDbServiseProducts = new LocalDbServiseProducts();
-                var products = localDbServiseProducts.GetListProductOnPage(db, paging, serchingFilterProducts);
+                var products = localDbServiseProducts.GetListProductOnPage(db, serchingFilterProducts);
                 var result = JsonSerializer.Serialize(products, BaseTextJsonSerializerWriteSettings);
                 return Content(result, "application/json; charset=utf-8");
             }
-        } 
+        }
     }
 }
