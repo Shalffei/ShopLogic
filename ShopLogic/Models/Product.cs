@@ -5,6 +5,8 @@ namespace ShopLogic.Models
     public class Product
     {
         public int Id { get; set; }
+        public int? YearMade { get; set; }
+        public string? CountryMade { get; set; }
         public string ProductCategoryName { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
