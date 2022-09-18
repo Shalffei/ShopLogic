@@ -86,7 +86,8 @@ namespace ShopLogic.Servise
                 .Skip((serchingFilter.Page - 1) * serchingFilter.CountProductsOnPage)
                 .Take(serchingFilter.CountProductsOnPage);
                 products = productsIQuer.ToList();
-
+                ProductResponse result = new ProductResponse { Products = products, CurrentPage = serchingFilter.Page, TotalProducts = db.Products.Count() };
+                return result;
             }
             else if (serchingFilter.ProductName != null)
             {
@@ -140,7 +141,8 @@ namespace ShopLogic.Servise
                 .Skip((serchingFilter.Page - 1) * serchingFilter.CountProductsOnPage)
                 .Take(serchingFilter.CountProductsOnPage);
                 products = productsIQuer.ToList();
-
+                ProductResponse result = new ProductResponse { Products = products, CurrentPage = serchingFilter.Page, TotalProducts = db.Products.Count() };
+                return result;
             }
             else if (serchingFilter.ProductFilter != null)
             {
@@ -180,15 +182,19 @@ namespace ShopLogic.Servise
                 }
                 else
                 {
-                    productsIQuer = productsIQuer.Select(prod => new Product 
-                    { Id = prod.Id, 
-                      Price = prod.Price });
+                    productsIQuer = productsIQuer.Select(prod => new Product
+                    {
+                        Id = prod.Id,
+                        Price = prod.Price
+                    });
                 }
                 productsIQuer = productsIQuer.Skip((serchingFilter.Page - 1) * serchingFilter.CountProductsOnPage)
                 .Take(serchingFilter.CountProductsOnPage);
                 products = productsIQuer.ToList();
+                ProductResponse result = new ProductResponse { Products = products, CurrentPage = serchingFilter.Page, TotalProducts = db.Products.Count() };
+                return result;
             }
-            else  
+            else
             {
                 if (serchingFilter.YearMade != null && serchingFilter.CountryMade != null)
                 {
@@ -209,7 +215,7 @@ namespace ShopLogic.Servise
                     .Select(prod => new Product
                     {
                         Id = prod.Id,
-                        Name= prod.Name,
+                        Name = prod.Name,
                         Price = prod.Price,
                         YearMade = prod.YearMade
                     });
@@ -236,10 +242,10 @@ namespace ShopLogic.Servise
                 }
                 productsIQuer = productsIQuer.AsNoTracking().Skip((serchingFilter.Page - 1) * serchingFilter.CountProductsOnPage)
                 .Take(serchingFilter.CountProductsOnPage);
-                 products = productsIQuer.ToList();
+                products = productsIQuer.ToList();
+                ProductResponse result = new ProductResponse { Products = products, CurrentPage = serchingFilter.Page, TotalProducts = db.Products.Count() };
+                return result;
             }
-            var result = new ProductResponse { Products = products, CurrentPage = serchingFilter.Page, TotalProducts = db.Products.Count() };
-            return result;
         }
     }
 }
