@@ -32,220 +32,38 @@ namespace ShopLogic.Servise
         public ProductResponse GetListProductOnPage (ApplicationContext db, PagingWithSerchingFilterProducts serchingFilter)
         {
             IQueryable<Product> productsIQuer = db.Products;
-            List <Product> products = new List<Product>();
-            if (serchingFilter.ProductFilter != null && serchingFilter.ProductName != null)
+            List<Product> products = new List<Product>();
+
+            if (serchingFilter.ProductFilter != null)
             {
-                productsIQuer = productsIQuer
-               .AsNoTracking().Where(prod => prod.Name.Contains(serchingFilter.ProductName)
-                    && prod.ProductCategoryName == serchingFilter.ProductFilter);
-                if (serchingFilter.YearMade != null && serchingFilter.CountryMade != null)
-                {
-                    productsIQuer = productsIQuer.Where(prod => prod.YearMade == serchingFilter.YearMade
-                    && prod.CountryMade == serchingFilter.CountryMade)
-                    .Select(prod => new Product
-                    {
-                        Id = prod.Id,
-                        Name = prod.Name,
-                        Price = prod.Price,
-                        CountryMade = prod.CountryMade,
-                        YearMade = prod.YearMade
-                    });
-                }
-                else if (serchingFilter.YearMade != null)
-                {
-                    productsIQuer = productsIQuer.Where(prod => prod.YearMade == serchingFilter.YearMade)
-                    .Select(prod => new Product
-                    {
-                        Id = prod.Id,
-                        Name = prod.Name,
-                        Price = prod.Price,
-                        YearMade = prod.YearMade
-                    });
-                }
-                else if (serchingFilter.CountryMade != null)
-                {
-                    productsIQuer = productsIQuer.Where(prod => prod.CountryMade == serchingFilter.CountryMade)
-                    .Select(prod => new Product
-                    {
-                        Id = prod.Id,
-                        Name = prod.Name,
-                        Price = prod.Price,
-                        CountryMade = prod.CountryMade
-                    });
-                }
-                else
-                {
-                    productsIQuer = productsIQuer.Select(prod => new Product
-                    {
-                        Id = prod.Id,
-                        Name = prod.Name,
-                        Price = prod.Price
-                    });
-                }
-                productsIQuer = productsIQuer
-                .Skip((serchingFilter.Page - 1) * serchingFilter.CountProductsOnPage)
-                .Take(serchingFilter.CountProductsOnPage);
-                products = productsIQuer.ToList();
-                ProductResponse result = new ProductResponse { Products = products, CurrentPage = serchingFilter.Page, TotalProducts = db.Products.Count() };
-                return result;
+                productsIQuer.Where(x => x.ProductCategoryName == serchingFilter.ProductFilter);
             }
-            else if (serchingFilter.ProductName != null)
+
+            if (serchingFilter.ProductName != null)
             {
-                productsIQuer = productsIQuer.AsNoTracking()
-                    .Where(prod => prod.Name.Contains(serchingFilter.ProductName));
-                if (serchingFilter.YearMade != null && serchingFilter.CountryMade != null)
-                {
-                    productsIQuer = productsIQuer.Where(prod => prod.YearMade == serchingFilter.YearMade
-                    && prod.CountryMade == serchingFilter.CountryMade)
-                    .Select(prod => new Product
-                    {
-                        Id = prod.Id,
-                        Name = prod.Name,
-                        Price = prod.Price,
-                        CountryMade = prod.CountryMade,
-                        YearMade = prod.YearMade
-                    });
-                }
-                else if (serchingFilter.YearMade != null)
-                {
-                    productsIQuer = productsIQuer.Where(prod => prod.YearMade == serchingFilter.YearMade)
-                    .Select(prod => new Product
-                    {
-                        Id = prod.Id,
-                        Name = prod.Name,
-                        Price = prod.Price,
-                        YearMade = prod.YearMade
-                    });
-                }
-                else if (serchingFilter.CountryMade != null)
-                {
-                    productsIQuer = productsIQuer.Where(prod => prod.CountryMade == serchingFilter.CountryMade)
-                    .Select(prod => new Product
-                    {
-                        Id = prod.Id,
-                        Name = prod.Name,
-                        Price = prod.Price,
-                        CountryMade = prod.CountryMade
-                    });
-                }
-                else
-                {
-                    productsIQuer = productsIQuer.Select(prod => new Product
-                    {
-                        Id = prod.Id,
-                        Name = prod.Name,
-                        Price = prod.Price,
-                    });
-                }
-                productsIQuer = productsIQuer
-                .Skip((serchingFilter.Page - 1) * serchingFilter.CountProductsOnPage)
-                .Take(serchingFilter.CountProductsOnPage);
-                products = productsIQuer.ToList();
-                ProductResponse result = new ProductResponse { Products = products, CurrentPage = serchingFilter.Page, TotalProducts = db.Products.Count() };
-                return result;
+                productsIQuer.Where(x => x.Name.Contains(serchingFilter.ProductName));
             }
-            else if (serchingFilter.ProductFilter != null)
+
+            if (serchingFilter.YearMade != null)
             {
-                productsIQuer = productsIQuer.AsNoTracking()
-                .Where(prod => prod.Name == serchingFilter.ProductFilter);
-                if (serchingFilter.YearMade != null && serchingFilter.CountryMade != null)
-                {
-                    productsIQuer = productsIQuer.Where(prod => prod.YearMade == serchingFilter.YearMade
-                    && prod.CountryMade == serchingFilter.CountryMade)
-                    .Select(prod => new Product
-                    {
-                        Id = prod.Id,
-                        Price = prod.Price,
-                        CountryMade = prod.CountryMade,
-                        YearMade = prod.YearMade
-                    });
-                }
-                else if (serchingFilter.YearMade != null)
-                {
-                    productsIQuer = productsIQuer.Where(prod => prod.YearMade == serchingFilter.YearMade)
-                    .Select(prod => new Product
-                    {
-                        Id = prod.Id,
-                        Price = prod.Price,
-                        YearMade = prod.YearMade
-                    });
-                }
-                else if (serchingFilter.CountryMade != null)
-                {
-                    productsIQuer = productsIQuer.Where(prod => prod.CountryMade == serchingFilter.CountryMade)
-                    .Select(prod => new Product
-                    {
-                        Id = prod.Id,
-                        Price = prod.Price,
-                        CountryMade = prod.CountryMade
-                    });
-                }
-                else
-                {
-                    productsIQuer = productsIQuer.Select(prod => new Product
-                    {
-                        Id = prod.Id,
-                        Price = prod.Price
-                    });
-                }
-                productsIQuer = productsIQuer.Skip((serchingFilter.Page - 1) * serchingFilter.CountProductsOnPage)
-                .Take(serchingFilter.CountProductsOnPage);
-                products = productsIQuer.ToList();
-                ProductResponse result = new ProductResponse { Products = products, CurrentPage = serchingFilter.Page, TotalProducts = db.Products.Count() };
-                return result;
+                productsIQuer.Where(x => x.YearMade == serchingFilter.YearMade);
             }
-            else
+
+            if (serchingFilter.CountryMade != null)
             {
-                if (serchingFilter.YearMade != null && serchingFilter.CountryMade != null)
-                {
-                    productsIQuer = productsIQuer.Where(prod => prod.YearMade == serchingFilter.YearMade
-                    && prod.CountryMade == serchingFilter.CountryMade)
-                    .Select(prod => new Product
-                    {
-                        Id = prod.Id,
-                        Name = prod.Name,
-                        Price = prod.Price,
-                        CountryMade = prod.CountryMade,
-                        YearMade = prod.YearMade
-                    });
-                }
-                else if (serchingFilter.YearMade != null)
-                {
-                    productsIQuer = productsIQuer.Where(prod => prod.YearMade == serchingFilter.YearMade)
-                    .Select(prod => new Product
-                    {
-                        Id = prod.Id,
-                        Name = prod.Name,
-                        Price = prod.Price,
-                        YearMade = prod.YearMade
-                    });
-                }
-                else if (serchingFilter.CountryMade != null)
-                {
-                    productsIQuer = productsIQuer.Where(prod => prod.CountryMade == serchingFilter.CountryMade)
-                    .Select(prod => new Product
-                    {
-                        Id = prod.Id,
-                        Name = prod.Name,
-                        Price = prod.Price,
-                        CountryMade = prod.CountryMade
-                    });
-                }
-                else
-                {
-                    productsIQuer = productsIQuer.Select(prod => new Product
-                    {
-                        Id = prod.Id,
-                        Name = prod.Name,
-                        Price = prod.Price
-                    });
-                }
-                productsIQuer = productsIQuer.AsNoTracking().Skip((serchingFilter.Page - 1) * serchingFilter.CountProductsOnPage)
-                .Take(serchingFilter.CountProductsOnPage);
-                products = productsIQuer.ToList();
-                ProductResponse result = new ProductResponse { Products = products, CurrentPage = serchingFilter.Page, TotalProducts = db.Products.Count() };
-                return result;
+                productsIQuer.Where(x => x.CountryMade == serchingFilter.CountryMade);
+            }
+            products = productsIQuer.AsNoTracking().Select(prod => new Product
+            {
+                Id = prod.Id,
+                Name = prod.Name,
+                Price = prod.Price,
+                CountryMade = prod.CountryMade,
+                YearMade = prod.YearMade
+            }).ToList();
+            ProductResponse result = new ProductResponse { Products = products, CurrentPage = serchingFilter.Page, TotalProducts = db.Products.Count() };
+            return result;
             }
         }
     }
-}
+
