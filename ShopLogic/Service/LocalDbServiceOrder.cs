@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ShopLogic.Servise
 {
-    public class LocalDbServiseOrder
+    public class LocalDbServiceOrder
     {
         public string AddToTrashOrder(ApplicationContext db, Order order, int userId)
         {
@@ -40,7 +40,7 @@ namespace ShopLogic.Servise
             decimal totalOrdersPrice = orders.Sum(x => x.Price);
             if (totalOrdersPrice <= user.MoneyBalance)
             {
-                LocalDbServiseProducts serviseProducts = new LocalDbServiseProducts();
+                LocalDbServiceProducts serviseProducts = new LocalDbServiceProducts();
                 serviseProducts.IncrementCountProducts(db, orders);
                 user.MoneyBalance -= totalOrdersPrice;
                 db.Users.Update(user);

@@ -18,8 +18,6 @@ namespace ShopLogic.Models
         public decimal MoneyBalance { get; set; }
         public int? AllCountOrders { get; set; }
         public decimal? TotalAmount { get; set; }
-        public List<Order> UserOrders { get; set; }
-
-
+        public List<Order>? UserOrders { get; set; }
     }
 }

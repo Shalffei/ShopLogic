@@ -10,7 +10,7 @@ using ShopLogic.Models;
 
 namespace ShopLogic.Servise
 {
-    public class LocalDbServiseUser
+    public class LocalDbServiceUser
     {
         public string AddToDbUser(ApplicationContext db, User user)
         {
@@ -32,7 +32,8 @@ namespace ShopLogic.Servise
         }
         public List<Order> GetUserBoughtOrders(ApplicationContext db, int userId)
         {
-            return db.Orders.Where(x => x.Id == userId && x.IsPayed == true).ToList();
+            var result = db.Orders.Where(x => x.Id == userId).ToList();
+            return result;
         }
         public User GetUser(ApplicationContext db, int userId)
         {

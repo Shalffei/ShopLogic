@@ -34,7 +34,7 @@ namespace ShopLogic.Controllers
         {
             using (ApplicationContext db = new ApplicationContext())
             {
-                LocalDbServiseProducts serviseProducts = new LocalDbServiseProducts();
+                LocalDbServiceProducts serviseProducts = new LocalDbServiceProducts();
                 serviseProducts.AddNewProduct(db, products);
                 return "Ok";
             }
@@ -45,7 +45,7 @@ namespace ShopLogic.Controllers
         {
             using (ApplicationContext db = new ApplicationContext())
             {
-                LocalDbServiseStatistic dbServiseStatistic = new LocalDbServiseStatistic();
+                LocalDbServiceStatistic dbServiseStatistic = new LocalDbServiceStatistic();
                 var result = dbServiseStatistic.GetDateOrdersWithUserTimofeyEdition(db, startFinishDate.StartDate, startFinishDate.EndDate);
                 var serialazer = JsonSerializer.Serialize(result, BaseTextJsonSerializerWriteSettings);
                 return Content(serialazer, "application/json; charset=utf-8");
@@ -57,11 +57,23 @@ namespace ShopLogic.Controllers
         {
             using (ApplicationContext db = new ApplicationContext())
             {
-                LocalDbServiseProducts localDbServiseProducts = new LocalDbServiseProducts();
+                LocalDbServiceProducts localDbServiseProducts = new LocalDbServiceProducts();
                 var products = localDbServiseProducts.GetListProductOnPage(db, serchingFilterProducts);
                 var result = JsonSerializer.Serialize(products, BaseTextJsonSerializerWriteSettings);
                 return Content(result, "application/json; charset=utf-8");
             }
         }
+        //[HttpGet]
+        //[Route("GetRozetcaProducts")]
+        //public IActionResult GetProductsFromRozetka()
+        //{
+        //     using (ApplicationContext db = new ApplicationContext())
+        //    {
+        //        LocalDbServiceProducts localDbServiseProducts = new LocalDbServiceProducts();
+        //        var products = localDbServiseProducts.GetListProducts(db);
+        //        var result = JsonSerializer.Serialize(products, BaseTextJsonSerializerWriteSettings);
+        //        return Content(result, "application/json; charset=utf-8");
+        //    }
+        //}
     }
 }

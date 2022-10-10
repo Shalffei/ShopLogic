@@ -19,7 +19,7 @@ namespace ShopLogic.Controllers
         {
             using (ApplicationContext db = new ApplicationContext())
             {
-                LocalDbServiseOrder addOrder = new LocalDbServiseOrder();
+                LocalDbServiceOrder addOrder = new LocalDbServiceOrder();
                 string message = addOrder.AddToTrashOrders(db, model, userId);
                 return Content(message);
             }
@@ -28,7 +28,7 @@ namespace ShopLogic.Controllers
         {
             using (ApplicationContext db = new ApplicationContext())
             {
-                LocalDbServiseOrder addOrder = new LocalDbServiseOrder();
+                LocalDbServiceOrder addOrder = new LocalDbServiceOrder();
                 string message = addOrder.AddToTrashOrder(db, order, userId);
                 return Content(message);
             }
@@ -39,7 +39,7 @@ namespace ShopLogic.Controllers
         {
             using (ApplicationContext db = new ApplicationContext())
             {
-                LocalDbServiseOrder addOrder = new LocalDbServiseOrder();
+                LocalDbServiceOrder addOrder = new LocalDbServiceOrder();
                 string message = addOrder.BuyOrders(db, userId);
                 return Content(message);
             }
@@ -50,7 +50,7 @@ namespace ShopLogic.Controllers
         {
             using (ApplicationContext db = new ApplicationContext())
             {
-                LocalDbServiseOrder addOrder = new LocalDbServiseOrder();
+                LocalDbServiceOrder addOrder = new LocalDbServiceOrder();
                 string message = addOrder.RemoveOrderFromTrash(db, userId, ordersId);
                 return Content(message);
             }

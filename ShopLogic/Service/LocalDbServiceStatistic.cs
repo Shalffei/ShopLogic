@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ShopLogic.Servise
 {
-    public class LocalDbServiseStatistic
+    public class LocalDbServiceStatistic
     {
         public TimofeyModel2 GetDateOrdersWithUserTimofeyEdition(ApplicationContext db, DateTime start, DateTime finish)
         {

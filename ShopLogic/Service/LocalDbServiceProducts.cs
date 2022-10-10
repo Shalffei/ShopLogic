@@ -6,7 +6,7 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace ShopLogic.Servise
 {
-    public class LocalDbServiseProducts
+    public class LocalDbServiceProducts
     {  
         public void AddNewProduct(ApplicationContext db, List<Product> products)
         {
@@ -29,26 +29,29 @@ namespace ShopLogic.Servise
                 db.SaveChanges();
             }            
         }
+        public Product GetProductById(int id)
+        {
+            using (ApplicationContext db = new ApplicationContext())
+            {
+                return db.Products.Where(x => x.Id == id).FirstOrDefault();
+            }
+        }
         public ProductResponse GetListProductOnPage (ApplicationContext db, PagingWithSerchingFilterProducts serchingFilter)
         {
             IQueryable<Product> productsIQuer = db.Products;
             List<Product> products = new List<Product>();
-
             if (serchingFilter.ProductFilter != null)
             {
                 productsIQuer.Where(x => x.ProductCategoryName == serchingFilter.ProductFilter);
             }
-
             if (serchingFilter.ProductName != null)
             {
                 productsIQuer.Where(x => x.Name.Contains(serchingFilter.ProductName));
             }
-
             if (serchingFilter.YearMade != null)
             {
                 productsIQuer.Where(x => x.YearMade == serchingFilter.YearMade);
             }
-
             if (serchingFilter.CountryMade != null)
             {
                 productsIQuer.Where(x => x.CountryMade == serchingFilter.CountryMade);
