@@ -11,14 +11,14 @@ namespace ShopLogic.Servise
 {
     public class LocalDbServiceOrder
     {
-        public string AddToTrashOrder(ApplicationContext db, Order order, int userId)
+        public string AddToTrashOrder(ApplicationDbContext db, Order order, int userId)
         {
             order.UserId = userId;
             db.Orders.Add(order);
             db.SaveChanges();
             return "Order Added";
         }
-        public string AddToTrashOrders(ApplicationContext db, List<Order> order, int userId)
+        public string AddToTrashOrders(ApplicationDbContext db, List<Order> order, int userId)
         {
             foreach (var item in order)
             {
@@ -33,7 +33,7 @@ namespace ShopLogic.Servise
             }
             return "Object Added";
         }
-        public string BuyOrders(ApplicationContext db, int userId)
+        public string BuyOrders(ApplicationDbContext db, int userId)
         {
             List<Order> orders = db.Orders.Where(x => x.UserId == userId && x.IsPayed == false).ToList();
             User user = db.Users.Where(x => x.Id == userId).Single();
@@ -57,7 +57,7 @@ namespace ShopLogic.Servise
                 return "You don't have enough money";
             }
         }
-        public string RemoveOrderFromTrash(ApplicationContext db, int userId, List<int> ordersId)
+        public string RemoveOrderFromTrash(ApplicationDbContext db, int userId, List<int> ordersId)
         {
             List<Order> orders = db.Orders.Where(x => x.UserId == userId && x.IsPayed != true).ToList();
 

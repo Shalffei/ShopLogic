@@ -17,7 +17,7 @@ namespace ShopLogic.Controllers
         [Route("AddOrders")]
         public IActionResult AddOrders([FromBody] List<Order> model, [FromQuery] int userId)
         {
-            using (ApplicationContext db = new ApplicationContext())
+            using (ApplicationDbContext db = new ApplicationDbContext())
             {
                 LocalDbServiceOrder addOrder = new LocalDbServiceOrder();
                 string message = addOrder.AddToTrashOrders(db, model, userId);
@@ -26,7 +26,7 @@ namespace ShopLogic.Controllers
         }
         public IActionResult AddOrders([FromBody] Order order, [FromQuery] int userId)
         {
-            using (ApplicationContext db = new ApplicationContext())
+            using (ApplicationDbContext db = new ApplicationDbContext())
             {
                 LocalDbServiceOrder addOrder = new LocalDbServiceOrder();
                 string message = addOrder.AddToTrashOrder(db, order, userId);
@@ -37,7 +37,7 @@ namespace ShopLogic.Controllers
         [Route("BuyOrders")]
         public IActionResult BuyOrders([FromQuery] int userId)
         {
-            using (ApplicationContext db = new ApplicationContext())
+            using (ApplicationDbContext db = new ApplicationDbContext())
             {
                 LocalDbServiceOrder addOrder = new LocalDbServiceOrder();
                 string message = addOrder.BuyOrders(db, userId);
@@ -48,7 +48,7 @@ namespace ShopLogic.Controllers
         [Route("RemoveOrdersFromTrash")]
         public IActionResult RemoveOrdersFromTrash( [FromQuery] int userId, List<int> ordersId)
         {
-            using (ApplicationContext db = new ApplicationContext())
+            using (ApplicationDbContext db = new ApplicationDbContext())
             {
                 LocalDbServiceOrder addOrder = new LocalDbServiceOrder();
                 string message = addOrder.RemoveOrderFromTrash(db, userId, ordersId);

@@ -33,7 +33,7 @@ namespace ShopLogic.Controllers
         [Route("AddUser")]
         public IActionResult GetUser ([FromBody] User model)
         {
-            using (ApplicationContext db = new ApplicationContext())
+            using (ApplicationDbContext db = new ApplicationDbContext())
             {
                 LocalDbServiceUser addUser = new LocalDbServiceUser();
                 model.MoneyBalance = 3000.0m;
@@ -45,7 +45,7 @@ namespace ShopLogic.Controllers
         [Route("RemoveUser")]
         public IActionResult RemoveUser([FromBody] User model)
         {
-            using (ApplicationContext db = new ApplicationContext())
+            using (ApplicationDbContext db = new ApplicationDbContext())
             {
                 LocalDbServiceUser addUser = new LocalDbServiceUser();
                 string message = addUser.RemoveFromDbUser(db, model);
@@ -56,7 +56,7 @@ namespace ShopLogic.Controllers
         [Route("ChangeUser")]
         public IActionResult ChangeUser([FromBody] User model)
         {
-            using (ApplicationContext db = new ApplicationContext())
+            using (ApplicationDbContext db = new ApplicationDbContext())
             {
                 LocalDbServiceUser addUser = new LocalDbServiceUser();
                 string message = addUser.ChangesToDbUser(db, model);
@@ -67,7 +67,7 @@ namespace ShopLogic.Controllers
         [Route("GetBouthOrders")]
         public IActionResult GetBouthOrders([FromQuery] int userId)
         {
-            using (ApplicationContext db = new ApplicationContext())
+            using (ApplicationDbContext db = new ApplicationDbContext())
             {
                 LocalDbServiceUser addUser = new LocalDbServiceUser();
                 var result = addUser.GetUserBoughtOrders(db, userId);

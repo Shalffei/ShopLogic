@@ -7,7 +7,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace ShopLogic.Controllers
-
 {
     [ApiController]
     [Route("[controller]")]
@@ -32,7 +31,7 @@ namespace ShopLogic.Controllers
         [Route("AddProducts")]
         public string AddProducts([FromBody] List<Product> products)
         {
-            using (ApplicationContext db = new ApplicationContext())
+            using (ApplicationDbContext db = new ApplicationDbContext())
             {
                 LocalDbServiceProducts serviseProducts = new LocalDbServiceProducts();
                 serviseProducts.AddNewProduct(db, products);
@@ -43,7 +42,7 @@ namespace ShopLogic.Controllers
         [Route("OrderStatisticsByDate")]
         public IActionResult OrderStatisticsByDate([FromBody] StartFinishDate startFinishDate)
         {
-            using (ApplicationContext db = new ApplicationContext())
+            using (ApplicationDbContext db = new ApplicationDbContext())
             {
                 LocalDbServiceStatistic dbServiseStatistic = new LocalDbServiceStatistic();
                 var result = dbServiseStatistic.GetDateOrdersWithUserTimofeyEdition(db, startFinishDate.StartDate, startFinishDate.EndDate);
@@ -55,7 +54,7 @@ namespace ShopLogic.Controllers
         [Route("GetProducts")]
         public IActionResult GetProducts([FromBody] PagingWithSerchingFilterProducts serchingFilterProducts)
         {
-            using (ApplicationContext db = new ApplicationContext())
+            using (ApplicationDbContext db = new ApplicationDbContext())
             {
                 LocalDbServiceProducts localDbServiseProducts = new LocalDbServiceProducts();
                 var products = localDbServiseProducts.GetListProductOnPage(db, serchingFilterProducts);
@@ -63,17 +62,35 @@ namespace ShopLogic.Controllers
                 return Content(result, "application/json; charset=utf-8");
             }
         }
-        //[HttpGet]
-        //[Route("GetRozetcaProducts")]
-        //public IActionResult GetProductsFromRozetka()
-        //{
-        //     using (ApplicationContext db = new ApplicationContext())
-        //    {
-        //        LocalDbServiceProducts localDbServiseProducts = new LocalDbServiceProducts();
-        //        var products = localDbServiseProducts.GetListProducts(db);
-        //        var result = JsonSerializer.Serialize(products, BaseTextJsonSerializerWriteSettings);
-        //        return Content(result, "application/json; charset=utf-8");
-        //    }
-        //}
+        [HttpGet]
+        [Route("GetRozetcaProducts")]
+        public IActionResult GetProductsFromRozetka([FromQuery]int page)
+        {
+            using (ApplicationDbContext db = new ApplicationDbContext())
+            {
+                int notNull = 1;
+                LocalDbServiceProducts localDbServiseProducts = new LocalDbServiceProducts();
+                if(page == null)
+                {
+                    var products = localDbServiseProducts.GetListProducts(db, notNull);
+                    var result = JsonSerializer.Serialize(products, BaseTextJsonSerializerWriteSettings);
+                    return Content(result, "application/json; charset=utf-8");
+                }
+                else
+                {
+                    var products = localDbServiseProducts.GetListProducts(db, page);
+                    var result = JsonSerializer.Serialize(products, BaseTextJsonSerializerWriteSettings);
+                    return Content(result, "application/json; charset=utf-8");
+                }
+            }
+        }
+        [HttpGet]
+        [Route ("GetProductById")]
+        public IActionResult GetProductById([FromQuery] int id)
+        {
+            LocalDbServiceProducts localDbServiceProducts = new LocalDbServiceProducts();
+            var product = localDbServiceProducts.GetProductById(id);
+            return Content(JsonSerializer.Serialize(product, BaseTextJsonSerializerWriteSettings));
+        }
     }
 }

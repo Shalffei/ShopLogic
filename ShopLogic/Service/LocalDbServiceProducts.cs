@@ -1,14 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using ShopLogic.EntityFramework;
 using ShopLogic.Models;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Text.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ShopLogic.Servise
 {
     public class LocalDbServiceProducts
     {  
-        public void AddNewProduct(ApplicationContext db, List<Product> products)
+        public void AddNewProduct(ApplicationDbContext db, List<Product> products)
         {
             foreach (Product product in products)
             {
@@ -16,7 +20,7 @@ namespace ShopLogic.Servise
                 db.SaveChanges();
             }
         }
-        public void IncrementCountProducts(ApplicationContext db, List <Order> orders)
+        public void IncrementCountProducts(ApplicationDbContext db, List <Order> orders)
         {
             Product products = new Product();
             
@@ -31,12 +35,12 @@ namespace ShopLogic.Servise
         }
         public Product GetProductById(int id)
         {
-            using (ApplicationContext db = new ApplicationContext())
+            using (ApplicationDbContext db = new ApplicationDbContext())
             {
-                return db.Products.Where(x => x.Id == id).FirstOrDefault();
+                return db.Products.Where(x => x.IdRozetka == id).FirstOrDefault();
             }
         }
-        public ProductResponse GetListProductOnPage (ApplicationContext db, PagingWithSerchingFilterProducts serchingFilter)
+        public ProductResponse GetListProductOnPage (ApplicationDbContext db, PagingWithSerchingFilterProducts serchingFilter)
         {
             IQueryable<Product> productsIQuer = db.Products;
             List<Product> products = new List<Product>();
@@ -66,7 +70,33 @@ namespace ShopLogic.Servise
             }).ToList();
             ProductResponse result = new ProductResponse { Products = products, CurrentPage = serchingFilter.Page, TotalProducts = db.Products.Count() };
             return result;
+        }
+        public JsonForPagingWithProduct GetListProducts(ApplicationDbContext db, int page)
+        {
+            if (page == 0)
+            {
+                page = 1;
             }
+            var pageResult = 4f;
+            var pageCount = Math.Ceiling(db.Products.Count() / pageResult);
+            var products = db.Products.Skip((page - 1) * (int)pageResult).Take((int)pageResult).ToList();
+            List<ProductForView> result = new List<ProductForView>();
+            foreach (var item in products)
+            {
+                ProductForView product = new ProductForView() { 
+                    CountryMade = item.CountryMade, 
+                    IdRozetka = item.IdRozetka, 
+                    Name = item.Name,
+                    ProductRozetkaId = item.ProductRozetkaId,
+                    ProductCategoryName = item.ProductCategoryName,
+                    Price = item.Price,
+                    CharacteristicsList = JsonSerializer.Deserialize<List<Characteristics>>(item.Characteristics).ToList()
+                };
+                result.Add(product);
+            }
+            JsonForPagingWithProduct jsonForPagingWithProduct = new JsonForPagingWithProduct() { TotalPages = (int)pageCount, Products = result, Page = page};
+            return jsonForPagingWithProduct;
         }
     }
+}
 

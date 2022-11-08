@@ -12,30 +12,30 @@ namespace ShopLogic.Servise
 {
     public class LocalDbServiceUser
     {
-        public string AddToDbUser(ApplicationContext db, User user)
+        public string AddToDbUser(ApplicationDbContext db, User user)
         {
             db.Users.Add(user);
             db.SaveChanges();
             return "User has been created";
         }
-        public string RemoveFromDbUser(ApplicationContext db, User user)
+        public string RemoveFromDbUser(ApplicationDbContext db, User user)
         {
             db.Remove(user);
             db.SaveChanges();
             return "User has been remuved successfuly";
         }
-        public string ChangesToDbUser(ApplicationContext db, User user)
+        public string ChangesToDbUser(ApplicationDbContext db, User user)
         {
             db.Users.Update(user);
             db.SaveChanges();
             return "Changes has saved";
         }
-        public List<Order> GetUserBoughtOrders(ApplicationContext db, int userId)
+        public List<Order> GetUserBoughtOrders(ApplicationDbContext db, int userId)
         {
             var result = db.Orders.Where(x => x.Id == userId).ToList();
             return result;
         }
-        public User GetUser(ApplicationContext db, int userId)
+        public User GetUser(ApplicationDbContext db, int userId)
         {
             return db.Users.Where(x => x.Id == userId).Single();
         }

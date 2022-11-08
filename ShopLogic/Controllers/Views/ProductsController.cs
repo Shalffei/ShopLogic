@@ -3,7 +3,7 @@ using ShopLogic.Servise;
 using ShopLogic.Models;
 using System.Text.Json;
 
-namespace ShopLogic.ViewControllers
+namespace ShopLogic.Controllers.Views
 {
     public class ProductsController : Controller
     {
@@ -14,7 +14,7 @@ namespace ShopLogic.ViewControllers
             LocalDbServiceProducts serviceProduct = new LocalDbServiceProducts();
             var product = serviceProduct.GetProductById(id);
             var characteristics = JsonSerializer.Deserialize<List<Characteristics>>(product.Characteristics);
-            ProductForView productWithCharacteristics = new ProductForView() { Name = product.Name, IdRozetka = product.IdRozetka, Price = product.Price, ProductCategoryName = product.ProductCategoryName, CharacteristicsList = characteristics};
+            ProductForView productWithCharacteristics = new ProductForView() { Name = product.Name, IdRozetka = product.IdRozetka, Price = product.Price, ProductCategoryName = product.ProductCategoryName, CharacteristicsList = characteristics };
             return View(productWithCharacteristics);
         }
     }

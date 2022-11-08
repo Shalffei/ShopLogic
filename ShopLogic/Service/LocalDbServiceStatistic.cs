@@ -11,7 +11,7 @@ namespace ShopLogic.Servise
 {
     public class LocalDbServiceStatistic
     {
-        public TimofeyModel2 GetDateOrdersWithUserTimofeyEdition(ApplicationContext db, DateTime start, DateTime finish)
+        public TimofeyModel2 GetDateOrdersWithUserTimofeyEdition(ApplicationDbContext db, DateTime start, DateTime finish)
         {
             TimofeyModel2 response = new TimofeyModel2 { Users = new List<TimofeyModelUserData>() };
             var orders = db.Orders.AsNoTracking().Where(x => x.IsPayed == true && x.Created >= start && x.Created <= finish).ToList();
@@ -52,7 +52,7 @@ namespace ShopLogic.Servise
 
 
 
-        public TimofeyModel2 GetDateOrdersWithUser(ApplicationContext db, DateTime start, DateTime finish)
+        public TimofeyModel2 GetDateOrdersWithUser(ApplicationDbContext db, DateTime start, DateTime finish)
         {
             TimofeyModel2 timofeyModel2 = new TimofeyModel2 { Users = new List<TimofeyModelUserData>() };
             timofeyModel2.PopularProductId = db.Products.Include(prod => prod.ProductOrders.Where(order => order.Created >= start && order.Created <= finish)).OrderByDescending(x => x.BuyCount).Select(x => x.Id).FirstOrDefault();
